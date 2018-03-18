@@ -14,7 +14,8 @@ parser.add_argument('--input', '--input-dir', action='store',
 parser.add_argument('--model', action='store',
                     help='Путь к файлу, в который сохраняется модель',
                     default=False)
-parser.add_argument('--lc', action='store_true', default=False)
+parser.add_argument('--lc', action='store_true',
+                    help='Приводить тексты к lowercase', default=False)
 
 args = parser.parse_args()
 
