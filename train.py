@@ -28,6 +28,7 @@ def gen_lines():
                 yield line.lower()
             else:
                 yield line
+        f.close()
     else:
         for line in sys.stdin:
             if args.lc:
@@ -80,4 +81,4 @@ else:
     sys.exit()
 
 train_itself()
-
+g.close()
