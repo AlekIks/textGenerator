@@ -6,8 +6,10 @@ import random
 
 r_alphabet = re.compile(u'[a-zA-Z0-9-]+|[.,:;?!]+')
 
+# ########################################
+# Здесь описано консольное взаимодействие
 
-parser = argparse.ArgumentParser(description='Сгенерировать текст',
+parser = argparse.ArgumentParser(description='Генерация текст',
                                  prog='generate', fromfile_prefix_chars='@')
 parser.add_argument('--length', action='store',
                     help='длина генерируемой последовательности',
@@ -24,6 +26,7 @@ parser.add_argument('--output', action='store_true', default=False,
 
 args = parser.parse_args()
 
+# ARGS
 if args.model:
     f = open(args.model, 'r')
 else:
@@ -35,6 +38,9 @@ if args.length:
 else:
     print('Пожалуйста, укажите длину последовательности')
     sys.exit()
+
+# ########################################
+# ЧТЕНИЕ МОДЕЛИ
 
 model = defaultdict(list)
 
@@ -50,7 +56,8 @@ for i in range(t):
         lines.append([line[0:len(line)-1], freq_line])
     model[name[0:len(name)-1]] = lines
 
-print(model)
+# ########################################
+# ПЕЧАТЬ ТЕКСТА В ФАЙЛ/STDOUT
 
 t0 = ''
 if args.seed:
@@ -62,7 +69,7 @@ if args.output:
     g = open(args.output, 'w')
 
 s = ''
-for i in range(int(args.length)):
+for j in range(int(args.length)):
     if args.output:
         g.write(t0 + ' ')
     else:

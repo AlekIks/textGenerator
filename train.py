@@ -5,8 +5,10 @@ from collections import defaultdict
 
 r_alphabet = re.compile(u'[a-zA-Z_]+')
 
+# ########################################
+# Здесь описано консольное взаимодействие
 
-parser = argparse.ArgumentParser(description='Создать модель текста',
+parser = argparse.ArgumentParser(description='Создание модель текста',
                                  prog='train', fromfile_prefix_chars='@')
 parser.add_argument('--input', '--input-dir', action='store',
                     help='Путь к директории, в которой лежит коллекция документов',
@@ -19,8 +21,17 @@ parser.add_argument('--lc', action='store_true',
 
 args = parser.parse_args()
 
+# ########################################
+# GENERATOR OF LINES
+
 
 def gen_lines():
+    """
+    :rtype: gen_lines
+    Генератор считывания текста из файла,
+    либо из stdin (в зависимости от того,
+    как пользователем задан input)
+    """
     if args.input:
         f = open(args.input, 'r')
         for line in f:
@@ -36,22 +47,46 @@ def gen_lines():
             else:
                 yield line
 
+# ########################################
+# GENERATOR OF CLEAR WORDS
+
 
 def gen_tokens(s):
+    """
+    :rtype: gen_tokens
+    Генератор, возвращает "очищенные" от неалфавитных символов слова из строк
+    """
     for elem in s:
         for token in r_alphabet.findall(elem):
             yield token
 
+# ########################################
+# GENERATOR OF WORD PAIRS
+
 
 def gen_bigrams(tokens):
+    """
+    :param tokens:
+    Генератор пар слов (предыдущее-последующее)
+    :return: пара
+    """
     t1 = '$'
     for t2 in tokens:
         if t1 != '$':
             yield t1, t2
         t1 = t2
 
+# ########################################
+# MODEL CREATING
+
 
 def train_itself():
+    """
+    Функция, создающая словарь (model),
+    где ключ - слово,
+    а значение - пара (следующее слово + частота встречаемости пары)
+    :return:
+    """
     lines = gen_lines()
     tokens = gen_tokens(lines)
     b_grams = gen_bigrams(tokens)
@@ -73,6 +108,9 @@ def train_itself():
             g.write(elem[0] + '\n')
             g.write(str(elem[1]) + '\n')
 
+
+# ########################################
+# CALL OF FUNCTIONS
 
 if args.model:
     g = open(args.model, 'w')
