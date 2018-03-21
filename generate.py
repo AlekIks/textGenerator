@@ -4,8 +4,6 @@ import re
 from collections import defaultdict
 import random
 
-r_alphabet = re.compile(u'[a-zA-Z0-9-]+|[.,:;?!]+')
-
 # ########################################
 # Здесь описано консольное взаимодействие
 
@@ -19,7 +17,7 @@ parser.add_argument('--model', action='store',
                     default=False)
 parser.add_argument('--seed', action='store_true', default=False,
                     help='Начальное слово. Если не указано, выбираем слово '
-                         'случайно из всех слов (не учитывая частоты)')
+                         'случайно из всех слов (учитывая частоты)')
 parser.add_argument('--output', action='store_true', default=False,
                     help='Файл, в который будет записан результат. '
                          'Если аргумент отсутствует, выводить в stdout.')
