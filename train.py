@@ -3,7 +3,7 @@ import sys
 import re
 from collections import defaultdict
 
-r_alphabet = re.compile(u'[a-zA-Z_]+')
+r_alphabet = re.compile(u'[a-zA-Z_]+') # нет кириллицы, но есть зачем-то нижнее подчеркивание
 
 # ########################################
 # Здесь описано консольное взаимодействие
@@ -56,7 +56,7 @@ def gen_tokens(s):
     :rtype: gen_tokens
     Генератор, возвращает "очищенные" от неалфавитных символов слова из строк
     """
-    for elem in s:
+    for elem in s:  # оставила бы line in lines, так же понятнее
         for token in r_alphabet.findall(elem):
             yield token
 
@@ -80,7 +80,7 @@ def gen_bigrams(tokens):
 # MODEL CREATING
 
 
-def train_itself():
+def train_itself():  # сюда передавать файл в который пишешь, а не глобально его определять
     """
     Функция, создающая словарь (model),
     где ключ - слово,
@@ -92,7 +92,7 @@ def train_itself():
     b_grams = gen_bigrams(tokens)
     bi = defaultdict(int)
 
-    for t0, t1 in b_grams:
+    for t0, t1 in b_grams:  # t0, t1 переназвать
         bi[t0, t1] += 1
 
     model = defaultdict(set)
@@ -101,7 +101,7 @@ def train_itself():
 
     g.write(str(len(model)) + '\n')
 
-    for key in model.keys():
+    for key in model.keys():  
         g.write(str(key) + '\n')
         g.write(str(len(model[key])) + '\n')
         for elem in model[key]:
