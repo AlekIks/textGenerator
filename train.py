@@ -105,7 +105,7 @@ def train_itself():  # сюда передавать файл в который 
 
     g.write(str(len(model)) + '\n')
 
-    for key in model.keys():  
+    for key in model.keys():   # используй здесь pickle
         g.write(str(key) + '\n')
         g.write(str(len(model[key])) + '\n')
         for elem in model[key]:
