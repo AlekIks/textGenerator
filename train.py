@@ -12,6 +12,10 @@ parser = argparse.ArgumentParser(description='Создание модель те
                                  prog='train', fromfile_prefix_chars='@')
 parser.add_argument('--input', '--input-dir', action='store',
                     help='Путь к директории, в которой лежит коллекция документов',
+                    
+                    # а читаешь из файла только!
+                    # написано же про папку, нужно читать все .txt файлы из папки
+                    
                     default=False)
 parser.add_argument('--model', action='store',
                     help='Путь к файлу, в который сохраняется модель',
