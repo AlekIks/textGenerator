@@ -99,7 +99,7 @@ def gen_bigrams(tokens):
 # MODEL CREATING
 
 
-def train_itself():  # сюда передавать файл в который пишешь, а не глобально его определять
+def train_itself():
     """
     Функция, создающая словарь (model),
     где ключ - слово,
