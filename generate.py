@@ -1,87 +1,99 @@
-# переписать, разделив код на функции, глобального кода быть не должно вообще, кроме вызова функции main()
-# и pickle используй
-
-
-
 import argparse
 import sys
-import re
-from collections import defaultdict
 import random
+import pickle
 
 # ########################################
-# Здесь описано консольное взаимодействие
+# КОНСОЛЬНОЕ ВЗАИМОДЕЙСТВИЕ
 
-parser = argparse.ArgumentParser(description='Генерация текст',
-                                 prog='generate', fromfile_prefix_chars='@')
-parser.add_argument('--length', action='store',
-                    help='длина генерируемой последовательности',
-                    default=False)
-parser.add_argument('--model', action='store',
-                    help='Путь к файлу, из которого загружается модель',
-                    default=False)
-parser.add_argument('--seed', action='store_true', default=False,
-                    help='Начальное слово. Если не указано, выбираем слово '
-                         'случайно из всех слов (учитывая частоты)')
-parser.add_argument('--output', action='store_true', default=False,
-                    help='Файл, в который будет записан результат. '
-                         'Если аргумент отсутствует, выводить в stdout.')
 
-args = parser.parse_args()
+def deal_with_console():
+    """
+    Аргументы для запуска из консоли
+    :return: доступ к ним
+    """
+    parser = argparse.ArgumentParser(description='Генерация текст',
+                                     prog='generate', fromfile_prefix_chars='@')
+    parser.add_argument('--length', action='store',
+                        help='длина генерируемой последовательности',
+                        default=False)
+    parser.add_argument('--model', action='store',
+                        help='Путь к файлу, из которого загружается модель',
+                        default=False)
+    parser.add_argument('--seed', action='store', default=False,
+                        help='Начальное слово. Если не указано, выбираем слово '
+                             'случайно из всех слов (учитывая частоты)')
+    parser.add_argument('--output', action='store', default=False,
+                        help='Файл, в который будет записан результат. '
+                             'Если аргумент отсутствует, выводить в stdout.')
 
-# ARGS
-if args.model:
-    f = open(args.model, 'r')
-else:
-    print('Пожалуйста, укажите файл, из которого нужно загрузить модель')
-    sys.exit()
-
-if args.length:
-    n = args.length
-else:
-    print('Пожалуйста, укажите длину последовательности')
-    sys.exit()
+    return parser.parse_args()
 
 # ########################################
-# ЧТЕНИЕ МОДЕЛИ
+# ПРОВЕРКА НА ДОСТАТОЧНОСТЬ ИНФОРМАЦИИ ДЛЯ ГЕНЕРАЦИИ ТЕКСТА
 
-model = defaultdict(list)
 
-t = int(f.readline())
+def check_console(args):
+    """
+    Функция, которая проверяет, указали ли в консоли модели для генерации
+    текста и длину для него
+    :param args: то, что ввели в консоли
+    :return: если проверка пройдена, вернет пару (модель - первое слово текста)
+    """
+    if not args.model:
+        print('Пожалуйста, укажите файл, из которого нужно загрузить модель')
+        sys.exit()
 
-for i in range(t):
-    name = f.readline()
-    num = int(f.readline())
-    lines = []
-    for j in range(num):
-        line = f.readline()
-        freq_line = int(f.readline())
-        lines.append([line[0:len(line)-1], freq_line])
-    model[name[0:len(name)-1]] = lines
+    if not args.length:
+        print('Пожалуйста, укажите длину последовательности')
+        sys.exit()
 
-# ########################################
-# ПЕЧАТЬ ТЕКСТА В ФАЙЛ/STDOUT
+    f = open(args.model, 'rb')
+    model = pickle.load(f)
+    f.close()
 
-t0 = ''
-if args.seed:
-    t0 = args.seed
-else:
-    t0 = random.choice([k for k in model.keys()])
-
-if args.output:
-    g = open(args.output, 'w')
-
-s = ''
-for j in range(int(args.length)):
-    if args.output:
-        g.write(t0 + ' ')
+    startword = ""
+    if args.seed:
+        startword = args.seed
     else:
-        s += t0 + ' '
-    loc = model[t0]
-    t0 = random.choice([loc[k][0] for k in range(len(loc)) for num in range(loc[k][1])])
+        startword = random.choice([k for k in model.keys()])
+    return model, startword
 
-if args.output:
-    g.close()
-else:
-    print(s)
-f.close()
+
+# ########################################
+# ГЕНЕРАЦИЯ ТЕКСТА
+
+
+def generation_itself():
+    """
+    Функция, генерирующая текста по его длине и модели для него
+    """
+    args = deal_with_console()
+    model, word = check_console(args)
+
+    if args.output:
+        g = open(args.output, 'w')
+
+    ans = ''
+    for j in range(int(args.length)):
+        if args.output:
+            g.write(word + ' ')
+        else:
+            ans += word + ' '
+        loc = []
+        for elem in model[word]:
+            for num in range(elem[1]):
+                loc.append(elem[0])
+        word = random.choice(loc)
+
+    if args.output:
+        g.close()
+    else:
+        print(ans)
+
+
+# ########################################
+# CALL OF FUNCTIONS
+
+
+generation_itself()
