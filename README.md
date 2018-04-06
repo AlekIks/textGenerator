@@ -21,12 +21,12 @@ generate.py создает текст конкретной длины на ос�
 #### Пример проверки программы в консоли.
 
 train.py:
-1. python3 train.py --model model.pickle --input-dir tests --lc
-2. python3 train.py --model model.pickle
+1. python3 ./train.py --model model.pickle --input-dir tests --lc
+2. python3 ./train.py --model model.pickle
 
 generate.py:
-1. python3 generate.py --model model.pickle --length 20
-2. python3 generate.py --model model.pickle --length 40 --output RapFromTextGenerator.txt --seed где
+1. python3 ./generate.py --model model.pickle --length 20
+2. python3 ./generate.py --model model.pickle --length 40 --output RapFromTextGenerator.txt --seed где
 
 #### СТУДЕНТ:
 

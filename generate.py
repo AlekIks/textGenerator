@@ -95,5 +95,5 @@ def generation_itself():
 # ########################################
 # CALL OF FUNCTIONS
 
-
-generation_itself()
+if __name__ == "__main__":
+    generation_itself()

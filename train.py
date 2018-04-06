@@ -58,7 +58,7 @@ def gen_lines_from_directory(args):
     """
     directory = os.listdir(args.input)
     for file in directory:
-        f = open(args.input+'/'+file, 'r')  # используй os.path.join 
+        f = open(os.path.join(args.input, file), 'r')
         for line in f:
             if args.lc:
                 yield line.lower()
@@ -134,5 +134,5 @@ def train_itself():
 # ########################################
 # CALL OF FUNCTIONS
 
-# if __name__=='__main__'
-train_itself()
+if __name__ == '__main__':
+    train_itself()
